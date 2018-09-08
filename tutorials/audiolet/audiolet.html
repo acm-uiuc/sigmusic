@@ -1,0 +1,113 @@
+<!doctype html>
+<html>
+	<head>
+		<script src="Audiolet.js"></script>
+
+<!--
+
+Audiolet - sort of simple javascript audio.
+
+grab it. 
+	https://github.com/oampo/Audiolet/blob/master/src/audiolet/Audiolet.js
+	Download Audiolet.js, and put it somewhere nice. (over Raw you can select "Save link as")
+	
+Sooo.... let's make a hello world.
+
+HTML time.
+
+-->
+		<script>
+			var audiolet;
+			window.onload = function() {
+				
+				
+			}
+
+		</script>
+
+
+	</head>
+	<body>
+		<a href="javascript:run()">Click this to do stuff</a>
+		<script>
+			function run() {
+				alert("Hi.");
+			}
+
+			/**
+			so run this page, and click the first link.
+			WOOOOOOOOOOOOOOOO!!!!
+			except.... popups aren't noise. but are you with me so far?
+			**/
+		</script>
+		<br>
+		<a href="javascript:run2()">Click this to do hear stuff (not too loud though)</a>
+		<script>
+
+			/** So click the link above. **/
+
+			function run2() {
+				var audiolet = new Audiolet();
+				var sine = new Sine(audiolet, 440);
+				sine.connect(audiolet.output);	
+			}
+
+			/**
+			Do it. click the button. ISN'T IT AWESOME?!
+			ok. now refresh the page before you go crazy.
+			**/
+
+		</script>
+		<br>
+		<a href="javascript:run3()">Click this to do hear bloopy.</a>
+		<script>
+
+			/** So click the link above. **/
+
+			function run3() {
+				this.audiolet = new Audiolet();
+
+				//create
+				this.sine = new Square(audiolet, 440);
+				this.modulator = new Saw(this.audiolet, 0.9);
+				this.modulatorMulAdd = new MulAdd(this.audiolet, 200, 440);
+				this.filter = new LowPassFilter(this.audiolet, 2000);
+
+				//connect
+				this.modulator.connect(this.modulatorMulAdd); //0-1  440-640
+				this.modulatorMulAdd.connect(this.sine);
+				this.sine.connect(this.filter);
+				this.filter.connect(this.audiolet.output);
+			}
+
+			/**
+				OK. OK. If I lost you, sorry. I basically did everything new in this. right now.
+				so first thing first:
+				THE MAGICAL 'this'. almost wherever you are, it refers to the object you're in. it's magic, for all intents and purposes.
+				Remember in PD, how we attached objects to eachother? Oh hai, we're doing that here.
+
+					this.modulator = new Saw(this.audiolet, 0.9);
+				So here, we make a modulator to affet the pitch of the sine wave. it's frequency is slow, 0.9 hertz, and it's a saw waveform.
+
+					this.modulatorMulAdd = new MulAdd(this.audiolet, 200, 440);
+				And here, we make a way to tranform the [0-1] of the sawtooth wave into 440 + [0-1]*200
+
+					this.modulator.connect(this.modulatorMulAdd);
+					this.modulatorMulAdd.connect(this.sine);
+					this.sine.connect(this.audiolet.output);
+				This is the important part. now we connect everything together.
+				just like in PureData, we connect the OUTLET of a specific object to the INPUT of another object.
+				and obviously, at the end, we connect it to the output. tadaaaaaaaaaaa.
+			**/
+
+
+
+			/**
+				Livecode from here. pray it goes well.
+			**/
+		</script>
+
+		
+	</body>
+</html>
+

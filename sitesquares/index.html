@@ -1,0 +1,93 @@
+<!doctype html>
+<html>
+	<head>
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+		<script>
+			$(document).ready(function(){
+				grabData();
+				var t=setInterval("grabData();",5000);
+			});
+
+			function grabData(){
+				console.log("grabing new data");
+				$.ajax({
+					dataType: 'jsonp',
+					jsonp: 'jsonp_callback',
+					url: "http://sitesquares.herokuapp.com/colors?tail=84",
+					success: function (data) {
+						$("#main").html("");
+						for(i=0;i<data.length;i++){
+							$("#main").append("<div class='box' style='background-color:#" + data[i]['color'] + "'>");
+						}
+				  	},
+				});
+
+				$(window).bind("resize", function() {
+					recalcSizes();
+				});
+				recalcSizes();
+			}
+
+			function recalcSizes() {
+				$("#main-container").css("line-height", $(window).height()+"px");
+				return;//doop
+				var width = Math.sqrt(($(window).width()*$(window).height())/$(".box").length) ;
+				var numheight = $(window).height()/width;
+				if (numheight * width > $(window).height()) {
+					width = $(window).width()/(numheight-1);
+				}
+
+				width = width - 2;
+				document.styleSheets[0].addRule(".box", "width: "+width+"px;");
+				document.styleSheets[0].addRule(".box", "height: "+width+"px;");
+			}
+
+		</script>
+		<script type="text/javascript">
+		  var _gaq = _gaq || [];
+		  _gaq.push(['_setAccount', 'UA-31076025-1']);
+		  _gaq.push(['_trackPageview']);
+
+		  (function() {
+			var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+			ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+			var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+		  })();
+
+		</script>
+		<style type="text/css">
+			body {
+				margin: 0;
+				padding: 0;
+				background-color: #ccc;
+			}
+			.box {
+				width: 79px;
+				height: 79px;
+				float: left;
+				margin: 1px 0px 0px 1px;
+			}
+			#main-container {
+				height: 100%;
+				line-height: 100%;
+				text-align: center;
+				vertical-align:middle;
+			}
+			#main {
+				display: inline-block;
+				vertical-align:middle;
+				margin-left: auto;
+				margin-right: auto;
+				background-color: #fff;
+				width: 961px;
+				height: 561px;
+			}
+		</style>
+	</head>
+	<body>
+		<div id="main-container">
+			<div id="main">
+			</div>
+		</div>
+	</body>
+</html>
